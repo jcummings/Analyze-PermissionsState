@@ -107,8 +107,8 @@ This tool is specifically designed to analyze the **SharePoint Advanced Manageme
 | 🚨 Risk Factor | 📊 Default Score | 💡 Why It Matters |
 |----------------|:----------------:|-------------------|
 | 🌐 **Public Site** | **+3 points** | Visible to anyone on the internet |
-| 👥 **EEEU Permissions Present** | **+3 points** | External users have access |
-| 🔓 **Everyone Permissions Present** | **+3 points** | All organization users can access |
+| 👥 **EEEU Permissions Present** | **+3 points** | All organization users can access |
+| 🔓 **Everyone Permissions Present** | **+3 points** | External users may have access |
 | 🔗 **Anyone Links Present** | **+2 points** | Anonymous sharing links exist |
 | 🏷️ **No Sensitivity Label** | **+2 points** | Missing data classification |
 | 📈 **≥500 Users with Access** | **+2 points** | Large user base increases risk |
