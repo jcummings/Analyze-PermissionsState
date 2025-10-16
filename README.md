@@ -47,7 +47,7 @@ This tool is specifically designed to analyze the **SharePoint Advanced Manageme
 ### 🔗 How to Generate the Input Data
 
 1. **Navigate to SharePoint Advanced Management**
-   - Go to the Microsoft 365 Admin Center
+   - Go to the SharePoint Online Admin Center
    - Access SharePoint Advanced Management
 
 2. **Generate Site Permissions Report**
