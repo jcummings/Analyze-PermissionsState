@@ -306,13 +306,13 @@ Risk Score | Risk Level    | Site Name           | Site URL                    |
 
 <div align="center">
 
-| 🏷️ Category | 📊 Score Range | 🎨 Color | ⚠️ Priority Level | 📝 Description |
-|-------------|:-------------:|:--------:|:----------------:|----------------|
-| 🔴 **Critical Risk** | **10+** | ![#dc3545](https://via.placeholder.com/15/dc3545/000000?text=+) Red | 🚨 **URGENT** | Immediate attention required |
-| 🟠 **High Risk** | **7-9** | ![#fd7e14](https://via.placeholder.com/15/fd7e14/000000?text=+) Orange | ⚡ **HIGH** | Should be reviewed soon |
-| 🟡 **Medium Risk** | **4-6** | ![#ffc107](https://via.placeholder.com/15/ffc107/000000?text=+) Yellow | 📋 **MEDIUM** | Monitor and plan remediation |
-| 🔵 **Low Risk** | **1-3** | ![#17a2b8](https://via.placeholder.com/15/17a2b8/000000?text=+) Blue | 📝 **LOW** | Low priority for review |
-| 🟢 **No Risk** | **0** | ![#28a745](https://via.placeholder.com/15/28a745/000000?text=+) Green | ✅ **SAFE** | No risk factors identified |
+| 🏷️ Category | 📊 Score Range | ⚠️ Priority Level | 📝 Description |
+|-------------|:-------------:|:----------------:|----------------|
+| 🔴 **Critical Risk** | **10+** | 🚨 **URGENT** | Immediate attention required |
+| 🟠 **High Risk** | **7-9** | ⚡ **HIGH** | Should be reviewed soon |
+| 🟡 **Medium Risk** | **4-6** | 📋 **MEDIUM** | Monitor and plan remediation |
+| 🔵 **Low Risk** | **1-3** | 📝 **LOW** | Low priority for review |
+| 🟢 **No Risk** | **0** | ✅ **SAFE** | No risk factors identified |
 
 </div>
 
