@@ -388,6 +388,14 @@ function Generate-HtmlReport {
         th:hover { 
             background-color: #495057; 
         }
+        th.sort-asc::after {
+            content: ' ^';
+            font-weight: bold;
+        }
+        th.sort-desc::after {
+            content: ' v';
+            font-weight: bold;
+        }
         tr:nth-child(even) { 
             background-color: #f8f9fa; 
         }
@@ -546,6 +554,7 @@ function Generate-HtmlReport {
                 <option value="NoRisk">No Risk</option>
             </select>
             <button onclick="exportToJSON()">Export to JSON</button>
+            <button onclick="exportToCSV()">Export to CSV</button>
         </div>
         
         <table id="riskTable">
@@ -697,13 +706,14 @@ function Generate-HtmlReport {
             const tbody = table.querySelector('tbody');
             const rows = Array.from(tbody.querySelectorAll('tr'));
             
-            // Determine sort direction
+            // Get the header element
             const header = table.querySelectorAll('th')[columnIndex];
-            const currentText = header.innerHTML;
-            const isCurrentlyDescending = currentText.includes('&#9660;') || currentText.includes('▼');
-            const isCurrentlyAscending = currentText.includes('&#9650;') || currentText.includes('▲');
             
-            // Determine new sort direction - simple toggle logic
+            // Determine current sort state based on CSS classes
+            const isCurrentlyDescending = header.classList.contains('sort-desc');
+            const isCurrentlyAscending = header.classList.contains('sort-asc');
+            
+            // Determine new sort direction
             let newDescending;
             if (isCurrentlyDescending) {
                 newDescending = false; // Switch to ascending
@@ -714,10 +724,9 @@ function Generate-HtmlReport {
                 newDescending = (columnIndex === 0) ? true : false; // Risk score defaults to descending, others to ascending
             }
             
-            // Reset all headers
+            // Reset all headers - remove sort classes
             table.querySelectorAll('th').forEach(th => {
-                const cleanText = th.innerHTML.replace(/\s*&#9660;\s*|\s*&#9650;\s*|\s*▼\s*|\s*▲\s*/g, '');
-                th.innerHTML = cleanText;
+                th.classList.remove('sort-asc', 'sort-desc');
             });
             
             // Sort rows
@@ -736,9 +745,8 @@ function Generate-HtmlReport {
                 return 0;
             });
             
-            // Update header with sort indicator
-            const cleanText = header.innerHTML.replace(/\s*&#9660;\s*|\s*&#9650;\s*|\s*▼\s*|\s*▲\s*/g, '');
-            header.innerHTML = cleanText + (newDescending ? ' &#9660;' : ' &#9650;');
+            // Update header with sort indicator using CSS class
+            header.classList.add(newDescending ? 'sort-desc' : 'sort-asc');
             
             // Re-append sorted rows
             rows.forEach(row => tbody.appendChild(row));
@@ -788,13 +796,45 @@ function Generate-HtmlReport {
             window.URL.revokeObjectURL(url);
         }
         
+        function exportToCSV() {
+            const table = document.getElementById('riskTable');
+            const rows = table.querySelectorAll('tbody tr');
+            const headers = Array.from(table.querySelectorAll('th')).map(th => 
+                th.textContent.replace(/[↑↓▲▼]/g, '').trim()
+            );
+            
+            // Create CSV content
+            let csvContent = headers.join(',') + '\n';
+            
+            Array.from(rows).forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const rowData = Array.from(cells).map(cell => {
+                    let text = cell.textContent.trim();
+                    // Escape quotes and wrap in quotes if contains comma
+                    if (text.includes(',') || text.includes('"') || text.includes('\n')) {
+                        text = '"' + text.replace(/"/g, '""') + '"';
+                    }
+                    return text;
+                });
+                csvContent += rowData.join(',') + '\n';
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sharepoint-risk-analysis.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
         // Initial sort indicator (data is already sorted by PowerShell)
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
-                // Just set the visual indicator - data is already sorted correctly
+                // Set initial sort indicator for Risk Score column
                 const riskScoreHeader = document.getElementById('riskScoreHeader');
                 if (riskScoreHeader) {
-                    riskScoreHeader.innerHTML = 'Risk Score &#9660;'; // Down arrow to show it's sorted descending
+                    riskScoreHeader.classList.add('sort-desc'); // Down arrow to show it's sorted descending
                 }
             }, 100);
         });

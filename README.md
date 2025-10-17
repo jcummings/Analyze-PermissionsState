@@ -13,7 +13,7 @@
 
 ---
 
-**📊 Analyze** • **🎯 Prioritize** • **📈 Visualize** • **🔍 Export**
+**📊 Analyze** • **🎯 Prioritize** • **📈 Visualize** • **⬆️⬇️ Sort** • **� Export**
 
 </div>
 
@@ -38,6 +38,9 @@
 .\Analyze-SharePointRisk.ps1 -CsvPath ".\your-permissions-report.csv"
 
 # 3. View interactive HTML report (opens automatically)
+#    - Click column headers to sort data ⬆️⬇️
+#    - Use search box to filter results 🔍
+#    - Export filtered data to CSV or JSON 📤
 ```
 
 ## 📥 Data Source
@@ -81,6 +84,8 @@ This tool is specifically designed to analyze the **SharePoint Advanced Manageme
 - 📋 **Risk level filtering** dropdown
 - 📈 **Risk distribution chart** (interactive doughnut chart)
 - 📱 **Mobile-responsive design**
+- ⬆️⬇️ **Column sorting** with visual indicators (click any column header)
+- 🔄 **Bidirectional sort** (toggle ascending/descending with multiple clicks)
 
 </td>
 <td width="50%">
@@ -91,7 +96,8 @@ This tool is specifically designed to analyze the **SharePoint Advanced Manageme
 - 🔒 No customer-identifiable information
 
 ### 📤 **Export & Reporting**
-- 💾 **Export capabilities** (JSON format)
+- 💾 **CSV Export** - Download filtered/sorted data as spreadsheet
+- 📄 **JSON Export** - Structured data export for further analysis
 - 📊 **Summary statistics** dashboard
 - 📋 **Interactive table** with all site data
 - 🎛️ **Risk scores and explanations**
@@ -290,11 +296,17 @@ Risk Score | Risk Level    | Site Name           | Site URL                    |
 - 📱 **Responsive Design**: Mobile-friendly layout
 
 **⚡ Interactive Features**
-- 🔄 Click column headers to sort data
-- 🔍 Use search box to filter by keywords
-- 📊 Select risk level from dropdown filter
-- 💾 Export data to JSON format
-- ✨ Hover effects and smooth transitions
+- 🔄 **Column Sorting**: Click any column header to sort data
+  - � **Bidirectional**: Toggle between ascending (^) and descending (v) 
+  - 🎯 **Smart Sorting**: Numeric columns sort numerically, text columns alphabetically
+  - ✨ **Visual Indicators**: Clear ASCII arrows show current sort direction
+- � **Real-time Search**: Filter results by any text (site name, URL, risk factors)
+- 📋 **Risk Level Filter**: Dropdown to show only specific risk categories
+- � **Export Options**: 
+  - �💾 **CSV Export**: Download current filtered/sorted data as spreadsheet
+  - 📄 **JSON Export**: Structured data export for further analysis
+- 📱 **Responsive Design**: Mobile-friendly layout that adapts to screen size
+- ✨ **Professional Polish**: Hover effects, smooth transitions, and intuitive UX
 
 > **💡 See it in Action**: Run the tool with the included sample data to see the full interactive HTML report:
 > ```powershell
