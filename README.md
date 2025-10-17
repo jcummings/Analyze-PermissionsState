@@ -19,15 +19,19 @@
 
 ## 📋 Table of Contents
 
-- [🚀 Quick Start](#-quick-start)
-- [📥 Data Source](#-data-source)
-- [✨ Features](#-features)
-- [⚙️ Risk Scoring](#️-risk-scoring)
-- [🛠️ Usage](#️-usage)
-- [📊 Sample Output](#-sample-output)
-- [📁 Input Format](#-input-format)
-- [🎨 Risk Categories](#-risk-categories)
-- [📋 Requirements](#-requirements)
+- [🚀 Quick Start](#quick-start)
+- [📥 Data Source](#data-source)
+- [✨ Features](#features)
+- [⚙️ Default Scoring Methodology](#default-scoring-methodology)
+- [🛠️ Usage](#usage)
+- [📁 Input Data Format](#input-data-format)
+- [📊 Sample Output](#sample-output)
+- [🎨 Risk Categories](#risk-categories)
+- [📋 Requirements](#requirements)
+- [🚀 Examples](#examples)
+- [🗂️ Sample Data](#sample-data)
+- [👨‍💻 Author](#author)
+- [📄 License](#license)
 - [👨‍💻 Author](#-author)
 
 ## 🚀 Quick Start
@@ -193,22 +197,6 @@ The script expects a CSV file with the following columns (from SharePoint Advanc
 - 📅 `Report date`
 
 </details>
-
-## 📊 Sample Output
-
-### Console Output
-- Total sites analyzed
-- High risk sites count
-- Public sites count  
-- Sites with anyone links
-- Top 5 highest risk sites
-
-### HTML Report
-- Interactive table with all site data
-- Risk scores and explanations
-- Summary statistics dashboard with visual chart
-- JSON export functionality
-- Mobile-responsive design
 
 ## 📊 Sample Output
 
