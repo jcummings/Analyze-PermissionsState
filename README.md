@@ -19,20 +19,19 @@
 
 ## 📋 Table of Contents
 
-- [🚀 Quick Start](#quick-start)
-- [📥 Data Source](#data-source)
-- [✨ Features](#features)
-- [⚙️ Default Scoring Methodology](#default-scoring-methodology)
-- [🛠️ Usage](#usage)
-- [📁 Input Data Format](#input-data-format)
-- [📊 Sample Output](#sample-output)
-- [🎨 Risk Categories](#risk-categories)
-- [📋 Requirements](#requirements)
-- [🚀 Examples](#examples)
-- [🗂️ Sample Data](#sample-data)
-- [👨‍💻 Author](#author)
-- [📄 License](#license)
+- [🚀 Quick Start](#-quick-start)
+- [📥 Data Source](#-data-source)
+- [✨ Features](#-features)
+- [⚙️ Default Scoring Methodology](#️-default-scoring-methodology)
+- [🛠️ Usage](#️-usage)
+- [📁 Input Data Format](#-input-data-format)
+- [📊 Sample Output](#-sample-output)
+- [🎨 Risk Categories](#-risk-categories)
+- [📋 Requirements](#-requirements)
+- [🚀 Examples](#-examples)
+- [🗂️ Sample Data](#️-sample-data)
 - [👨‍💻 Author](#-author)
+- [📄 License](#-license)
 
 ## 🚀 Quick Start
 
