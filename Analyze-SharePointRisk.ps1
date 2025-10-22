@@ -1204,7 +1204,7 @@ function Generate-GuidancePage {
             position: relative;
         }
         .step-content li:before {
-            content: "&#10003;";
+            content: "\2713";
             position: absolute;
             left: 0;
             color: #28a745;
