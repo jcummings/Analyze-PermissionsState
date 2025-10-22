@@ -1145,6 +1145,10 @@ function Generate-GuidancePage {
             display: inline-block;
             margin-bottom: 30px;
         }
+        .back-link:before {
+            content: "\2190";
+            margin-right: 8px;
+        }
         .back-link:hover {
             background: #0056b3;
             text-decoration: none;
@@ -1250,7 +1254,7 @@ function Generate-GuidancePage {
 </head>
 <body>
     <div class="container">
-        <a href="javascript:history.back()" class="back-link">&larr; Back to Risk Analysis Report</a>
+        <a href="javascript:history.back()" class="back-link">Back to Risk Analysis Report</a>
         
         <h1>SharePoint Governance Action Plan</h1>
         
@@ -1405,7 +1409,7 @@ function Generate-GuidancePage {
         </div>
         
         <div style="text-align: center; margin-top: 30px;">
-            <a href="javascript:history.back()" class="back-link">&larr; Return to Risk Analysis Report</a>
+            <a href="javascript:history.back()" class="back-link">Return to Risk Analysis Report</a>
         </div>
     </div>
 </body>
