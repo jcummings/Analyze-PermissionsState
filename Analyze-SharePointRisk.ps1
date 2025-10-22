@@ -552,8 +552,9 @@ function Generate-HtmlReport {
         }
         .guidance-text p {
             margin: 0;
-            opacity: 0.9;
+            color: #ffffff;
             font-size: 14px;
+            font-weight: 500;
         }
         .guidance-arrow {
             font-size: 1.5em;
@@ -655,12 +656,12 @@ function Generate-HtmlReport {
             <h2>What to Do Next?</h2>
             <p>Now that you've identified SharePoint security risks, it's time to take action.</p>
             <a href="#" onclick="openGuidance()" class="guidance-button">
-                <span class="guidance-icon">📋</span>
+                <span class="guidance-icon">&#128203;</span>
                 <div class="guidance-text">
                     <h3>View Complete Action Plan</h3>
                     <p>Get step-by-step guidance for addressing these risks</p>
                 </div>
-                <span class="guidance-arrow">→</span>
+                <span class="guidance-arrow">&rarr;</span>
             </a>
         </div>
         
@@ -931,7 +932,7 @@ function Generate-HtmlReport {
             const table = document.getElementById('riskTable');
             const rows = table.querySelectorAll('tbody tr');
             const headers = Array.from(table.querySelectorAll('th')).map(th => 
-                th.textContent.replace(/[▲▼]/, '').trim()
+                th.textContent.replace(/[\u25B2\u25BC]/, '').trim()
             );
             
             const data = Array.from(rows).map(row => {
@@ -956,7 +957,7 @@ function Generate-HtmlReport {
             const table = document.getElementById('riskTable');
             const rows = table.querySelectorAll('tbody tr');
             const headers = Array.from(table.querySelectorAll('th')).map(th => 
-                th.textContent.replace(/[↑↓▲▼]/g, '').trim()
+                th.textContent.replace(/[\u2191\u2193\u25B2\u25BC]/g, '').trim()
             );
             
             // Create CSV content
@@ -1203,7 +1204,7 @@ function Generate-GuidancePage {
             position: relative;
         }
         .step-content li:before {
-            content: "✓";
+            content: "&#10003;";
             position: absolute;
             left: 0;
             color: #28a745;
@@ -1249,7 +1250,7 @@ function Generate-GuidancePage {
 </head>
 <body>
     <div class="container">
-        <a href="javascript:history.back()" class="back-link">← Back to Risk Analysis Report</a>
+        <a href="javascript:history.back()" class="back-link">&larr; Back to Risk Analysis Report</a>
         
         <h1>SharePoint Governance Action Plan</h1>
         
@@ -1404,7 +1405,7 @@ function Generate-GuidancePage {
         </div>
         
         <div style="text-align: center; margin-top: 30px;">
-            <a href="javascript:history.back()" class="back-link">← Return to Risk Analysis Report</a>
+            <a href="javascript:history.back()" class="back-link">&larr; Return to Risk Analysis Report</a>
         </div>
     </div>
 </body>
