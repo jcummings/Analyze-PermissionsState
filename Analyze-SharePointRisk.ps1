@@ -28,13 +28,15 @@ param(
 
 # Default scoring configuration
 $DefaultScoring = @{
-    PublicSite = 3
-    EEEUPermissions = 3
-    EveryonePermissions = 3
-    AnyoneLinks = 2
-    NoSensitivityLabel = 2
-    HighUserCount = 2
-    UserCountThreshold = 500
+    HighEEEUPermissions = 4          # High EEEU permissions (threshold-based)
+    PrivateSiteWithEEEU = 3          # Private site with EEEU permissions
+    PublicSiteWithSensitiveTitle = 5 # Public site with sensitive keywords in title
+    EveryonePermissions = 3          # Everyone permissions (still risky)
+    AnyoneLinks = 2                  # Anyone links (external sharing)
+    NoSensitivityLabel = 1           # Reduced - not inherently risky
+    HighUniquePermissions = 3        # Many unique permissions with broad access
+    EEEUPermissionThreshold = 10     # Threshold for "high" EEEU permissions
+    UniquePermissionThreshold = 50   # Threshold for "many" unique permissions
 }
 
 # Risk level definitions
@@ -55,12 +57,13 @@ function Get-ScoringPreference {
     Write-Host "`nScoring Configuration" -ForegroundColor Cyan
     Write-Host "===================" -ForegroundColor Cyan
     Write-Host "Default scoring weights:" -ForegroundColor Yellow
-    Write-Host "- Public Site: +$($DefaultScoring.PublicSite) points" -ForegroundColor White
-    Write-Host "- EEEU Permissions: +$($DefaultScoring.EEEUPermissions) points" -ForegroundColor White
+    Write-Host "- High EEEU Permissions ($($DefaultScoring.EEEUPermissionThreshold)+): +$($DefaultScoring.HighEEEUPermissions) points" -ForegroundColor White
+    Write-Host "- Private Site with EEEU: +$($DefaultScoring.PrivateSiteWithEEEU) points" -ForegroundColor White
+    Write-Host "- Public Site with Sensitive Title: +$($DefaultScoring.PublicSiteWithSensitiveTitle) points" -ForegroundColor White
     Write-Host "- Everyone Permissions: +$($DefaultScoring.EveryonePermissions) points" -ForegroundColor White
     Write-Host "- Anyone Links: +$($DefaultScoring.AnyoneLinks) points" -ForegroundColor White
+    Write-Host "- High Unique Permissions ($($DefaultScoring.UniquePermissionThreshold)+): +$($DefaultScoring.HighUniquePermissions) points" -ForegroundColor White
     Write-Host "- No Sensitivity Label: +$($DefaultScoring.NoSensitivityLabel) points" -ForegroundColor White
-    Write-Host "- $($DefaultScoring.UserCountThreshold)+ Users: +$($DefaultScoring.HighUserCount) points" -ForegroundColor White
     
     do {
         $response = Read-Host "`nWould you like to customize these scoring weights? (y/N)"
@@ -86,33 +89,41 @@ function Get-CustomScoring {
     
     $customScoring = $DefaultScoring.Clone()
     
-    $prompt = "Site Privacy = Public (default: $($DefaultScoring.PublicSite)): "
-    $input = Read-Host $prompt
-    if ($input -and $input -match '^\d+$') { $customScoring.PublicSite = [int]$input }
+    $prompt = "High EEEU Permissions (default: $($DefaultScoring.HighEEEUPermissions)): "
+    $userInput = Read-Host $prompt
+    if ($userInput -and $userInput -match '^\d+$') { $customScoring.HighEEEUPermissions = [int]$userInput }
     
-    $prompt = "EEEU Permissions Present (default: $($DefaultScoring.EEEUPermissions)): "
-    $input = Read-Host $prompt
-    if ($input -and $input -match '^\d+$') { $customScoring.EEEUPermissions = [int]$input }
+    $prompt = "Private Site with EEEU (default: $($DefaultScoring.PrivateSiteWithEEEU)): "
+    $userInput = Read-Host $prompt
+    if ($userInput -and $userInput -match '^\d+$') { $customScoring.PrivateSiteWithEEEU = [int]$userInput }
+    
+    $prompt = "Public Site with Sensitive Title (default: $($DefaultScoring.PublicSiteWithSensitiveTitle)): "
+    $userInput = Read-Host $prompt
+    if ($userInput -and $userInput -match '^\d+$') { $customScoring.PublicSiteWithSensitiveTitle = [int]$userInput }
     
     $prompt = "Everyone Permissions Present (default: $($DefaultScoring.EveryonePermissions)): "
-    $input = Read-Host $prompt
-    if ($input -and $input -match '^\d+$') { $customScoring.EveryonePermissions = [int]$input }
+    $userInput = Read-Host $prompt
+    if ($userInput -and $userInput -match '^\d+$') { $customScoring.EveryonePermissions = [int]$userInput }
     
     $prompt = "Anyone Links Present (default: $($DefaultScoring.AnyoneLinks)): "
-    $input = Read-Host $prompt
-    if ($input -and $input -match '^\d+$') { $customScoring.AnyoneLinks = [int]$input }
+    $userInput = Read-Host $prompt
+    if ($userInput -and $userInput -match '^\d+$') { $customScoring.AnyoneLinks = [int]$userInput }
+    
+    $prompt = "High Unique Permissions (default: $($DefaultScoring.HighUniquePermissions)): "
+    $userInput = Read-Host $prompt
+    if ($userInput -and $userInput -match '^\d+$') { $customScoring.HighUniquePermissions = [int]$userInput }
     
     $prompt = "No Sensitivity Label (default: $($DefaultScoring.NoSensitivityLabel)): "
-    $input = Read-Host $prompt
-    if ($input -and $input -match '^\d+$') { $customScoring.NoSensitivityLabel = [int]$input }
+    $userInput = Read-Host $prompt
+    if ($userInput -and $userInput -match '^\d+$') { $customScoring.NoSensitivityLabel = [int]$userInput }
     
-    $prompt = "High User Count (default: $($DefaultScoring.HighUserCount)): "
-    $input = Read-Host $prompt
-    if ($input -and $input -match '^\d+$') { $customScoring.HighUserCount = [int]$input }
+    $prompt = "EEEU Permission Threshold (default: $($DefaultScoring.EEEUPermissionThreshold)): "
+    $userInput = Read-Host $prompt
+    if ($userInput -and $userInput -match '^\d+$') { $customScoring.EEEUPermissionThreshold = [int]$userInput }
     
-    $prompt = "User Count Threshold (default: $($DefaultScoring.UserCountThreshold)): "
-    $input = Read-Host $prompt
-    if ($input -and $input -match '^\d+$') { $customScoring.UserCountThreshold = [int]$input }
+    $prompt = "Unique Permission Threshold (default: $($DefaultScoring.UniquePermissionThreshold)): "
+    $userInput = Read-Host $prompt
+    if ($userInput -and $userInput -match '^\d+$') { $customScoring.UniquePermissionThreshold = [int]$userInput }
     
     Write-Host "`nCustom scoring configuration applied!" -ForegroundColor Green
     return $customScoring
@@ -121,7 +132,7 @@ function Get-CustomScoring {
 function Calculate-RiskScore {
     <#
     .SYNOPSIS
-    Calculates risk score for a SharePoint site
+    Calculates risk score for a SharePoint site based on refined risk criteria
     #>
     param(
         [PSCustomObject]$Site,
@@ -131,40 +142,79 @@ function Calculate-RiskScore {
     $score = 0
     $reasons = @()
     
-    # Site Privacy = Public (+points)
-    if ($Site.'Site privacy' -eq 'Public') {
-        $score += $ScoringConfig.PublicSite
-        $reasons += "Public site (+$($ScoringConfig.PublicSite))"
+    # Define sensitive keywords for site titles/names
+    $sensitiveKeywords = @(
+        'HR', 'Human Resources', 'Payroll', 'Salary', 'Tax', 'Finance', 'Financial',
+        'Legal', 'Confidential', 'Private', 'Executive', 'Board', 'Research',
+        'Development', 'Strategy', 'Merger', 'Acquisition', 'Patent', 'Secret',
+        'Personal', 'Employee', 'Medical', 'Health', 'Compliance', 'Audit',
+        'Security', 'Admin', 'Internal', 'Restricted'
+    )
+    
+    $siteName = $Site.'Site name'
+    $siteUrl = $Site.'Site URL'
+    $sitePrivacy = $Site.'Site privacy'
+    $eeeuCount = [int]($Site.'EEEU permission count' -replace '[^\d]', '')
+    $everyoneCount = [int]($Site.'Everyone permission count' -replace '[^\d]', '')
+    $anyoneLinks = [int]($Site.'Anyone link count' -replace '[^\d]', '')
+    
+    # Get unique permissions count if available (this might need to be added to CSV export)
+    # For now, we'll use the total user count as a proxy for unique permissions complexity
+    $totalUsers = [int]($Site.'Number of users having access' -replace '[^\d]', '')
+    
+    # 1. High EEEU Permissions - Sites with many EEEU permissions are risky
+    if ($eeeuCount -ge $ScoringConfig.EEEUPermissionThreshold) {
+        $score += $ScoringConfig.HighEEEUPermissions
+        $reasons += "High EEEU permissions ($eeeuCount) (+$($ScoringConfig.HighEEEUPermissions))"
     }
     
-    # EEEU Permissions Present (+points)
-    if ($Site.'EEEU permission count' -gt 0) {
-        $score += $ScoringConfig.EEEUPermissions
-        $reasons += "EEEU permissions ($($Site.'EEEU permission count')) (+$($ScoringConfig.EEEUPermissions))"
+    # 2. Private Sites with EEEU and/or External Sharing - Private sites shouldn't have broad access
+    if ($sitePrivacy -eq 'Private' -and ($eeeuCount -gt 0 -or $anyoneLinks -gt 0)) {
+        $score += $ScoringConfig.PrivateSiteWithEEEU
+        $riskFactors = @()
+        if ($eeeuCount -gt 0) { $riskFactors += "EEEU permissions ($eeeuCount)" }
+        if ($anyoneLinks -gt 0) { $riskFactors += "external sharing ($anyoneLinks anyone links)" }
+        $reasons += "Private site with broad access: $($riskFactors -join ', ') (+$($ScoringConfig.PrivateSiteWithEEEU))"
     }
     
-    # Everyone Permissions Present (+points)
-    if ($Site.'Everyone permission count' -gt 0) {
+    # 3. Public Sites with Sensitive Titles - Public sites with sensitive content
+    if ($sitePrivacy -eq 'Public') {
+        $hasSensitiveTitle = $false
+        foreach ($keyword in $sensitiveKeywords) {
+            if ($siteName -match $keyword -or $siteUrl -match $keyword) {
+                $hasSensitiveTitle = $true
+                break
+            }
+        }
+        if ($hasSensitiveTitle) {
+            $score += $ScoringConfig.PublicSiteWithSensitiveTitle
+            $reasons += "Public site with sensitive title/URL (+$($ScoringConfig.PublicSiteWithSensitiveTitle))"
+        }
+    }
+    
+    # 4. Everyone Permissions - Still risky regardless of site type
+    if ($everyoneCount -gt 0) {
         $score += $ScoringConfig.EveryonePermissions
-        $reasons += "Everyone permissions ($($Site.'Everyone permission count')) (+$($ScoringConfig.EveryonePermissions))"
+        $reasons += "Everyone permissions ($everyoneCount) (+$($ScoringConfig.EveryonePermissions))"
     }
     
-    # Anyone Links Present (+points)
-    if ($Site.'Anyone link count' -gt 0) {
+    # 5. Anyone Links - External sharing risk
+    if ($anyoneLinks -gt 0) {
         $score += $ScoringConfig.AnyoneLinks
-        $reasons += "Anyone links ($($Site.'Anyone link count')) (+$($ScoringConfig.AnyoneLinks))"
+        $reasons += "Anyone links ($anyoneLinks) (+$($ScoringConfig.AnyoneLinks))"
     }
     
-    # No Sensitivity Label (+points)
+    # 6. Sites with Many Unique Permissions and Broad Access
+    # High user count + EEEU permissions suggests complex permission structure with broad access
+    if ($totalUsers -ge $ScoringConfig.UniquePermissionThreshold -and $eeeuCount -gt 0) {
+        $score += $ScoringConfig.HighUniquePermissions
+        $reasons += "High user count ($totalUsers) with EEEU permissions (+$($ScoringConfig.HighUniquePermissions))"
+    }
+    
+    # 7. No Sensitivity Label - Reduced weight as it's more of a compliance issue
     if ([string]::IsNullOrWhiteSpace($Site.'Site sensitivity')) {
         $score += $ScoringConfig.NoSensitivityLabel
         $reasons += "No sensitivity label (+$($ScoringConfig.NoSensitivityLabel))"
-    }
-    
-    # High User Count (+points)
-    if ($Site.'Number of users having access' -ge $ScoringConfig.UserCountThreshold) {
-        $score += $ScoringConfig.HighUserCount
-        $reasons += "High user count ($($Site.'Number of users having access')) (+$($ScoringConfig.HighUserCount))"
     }
     
     return @{
@@ -475,8 +525,8 @@ function Generate-HtmlReport {
                 <p>High Risk Sites (7+ Score)</p>
             </div>
             <div class="summary-card public-sites">
-                <h3>$($Statistics.PublicSites)</h3>
-                <p>Public Sites</p>
+                <h3>$($Statistics.PrivateSitesWithBroadAccess)</h3>
+                <p>Private Sites with Broad Access</p>
             </div>
             <div class="summary-card anyone-links">
                 <h3>$($Statistics.SitesWithAnyoneLinks)</h3>
@@ -509,15 +559,17 @@ function Generate-HtmlReport {
         
         <div class="scoring-info">
             <h2>Scoring Methodology</h2>
-            <p><strong>Risk factors and their weights:</strong></p>
+            <p><strong>Risk factors and their weights (focused on actual SharePoint security risks):</strong></p>
             <ul>
-                <li>Public Site: +$($ScoringConfig.PublicSite) points</li>
-                <li>EEEU Permissions Present: +$($ScoringConfig.EEEUPermissions) points</li>
+                <li>High EEEU Permissions ($($ScoringConfig.EEEUPermissionThreshold)+): +$($ScoringConfig.HighEEEUPermissions) points</li>
+                <li>Private Site with EEEU/External Sharing: +$($ScoringConfig.PrivateSiteWithEEEU) points</li>
+                <li>Public Site with Sensitive Title: +$($ScoringConfig.PublicSiteWithSensitiveTitle) points</li>
                 <li>Everyone Permissions Present: +$($ScoringConfig.EveryonePermissions) points</li>
                 <li>Anyone Links Present: +$($ScoringConfig.AnyoneLinks) points</li>
+                <li>High User Count ($($ScoringConfig.UniquePermissionThreshold)+) with EEEU: +$($ScoringConfig.HighUniquePermissions) points</li>
                 <li>No Sensitivity Label: +$($ScoringConfig.NoSensitivityLabel) points</li>
-                <li>$($ScoringConfig.UserCountThreshold)+ Users with Access: +$($ScoringConfig.HighUserCount) points</li>
             </ul>
+            <p><strong>Note:</strong> Public sites are internal-only by default and not inherently risky. Focus is on inappropriate broad access patterns and sensitive content exposure.</p>
         </div>
         
         <div class="legend">
@@ -875,12 +927,30 @@ try {
     
     Write-Host "`nLoading CSV data..." -ForegroundColor Yellow
     $sites = Import-Csv -Path $CsvPath
-    Write-Host "Loaded $($sites.Count) sites" -ForegroundColor Green
+    Write-Host "Loaded $($sites.Count) raw entries" -ForegroundColor Green
+    
+    Write-Host "`nDeduplicating and aggregating site data..." -ForegroundColor Yellow
+    # Group by Site URL and aggregate data for each unique site
+    $uniqueSites = $sites | Group-Object "Site URL" | ForEach-Object {
+        $siteGroup = $_.Group
+        $firstEntry = $siteGroup[0]  # Use first entry as base
+        
+        # Aggregate numeric values (take maximum values to represent worst-case risk)
+        $aggregatedSite = $firstEntry.PSObject.Copy()
+        $aggregatedSite."Number of users having access" = ($siteGroup | Measure-Object "Number of users having access" -Maximum).Maximum
+        $aggregatedSite."EEEU permission count" = ($siteGroup | Measure-Object "EEEU permission count" -Maximum).Maximum  
+        $aggregatedSite."Everyone permission count" = ($siteGroup | Measure-Object "Everyone permission count" -Maximum).Maximum
+        $aggregatedSite."Anyone link count" = ($siteGroup | Measure-Object "Anyone link count" -Maximum).Maximum
+        
+        return $aggregatedSite
+    }
+    
+    Write-Host "Deduplicated to $($uniqueSites.Count) unique sites" -ForegroundColor Green
     
     Write-Host "`nAnalyzing risk scores..." -ForegroundColor Yellow
     $analyzedSites = @()
     
-    foreach ($site in $sites) {
+    foreach ($site in $uniqueSites) {
         $riskResult = Calculate-RiskScore -Site $site -ScoringConfig $scoringConfig
         $analyzedSite = $site | Select-Object *, @{n='RiskScore';e={$riskResult.Score}}, @{n='RiskReasons';e={$riskResult.Reasons}}
         $analyzedSites += $analyzedSite
@@ -893,8 +963,11 @@ try {
     $statistics = @{
         TotalSites = $analyzedSites.Count
         HighRiskSites = ($analyzedSites | Where-Object { $_.RiskScore -ge 7 }).Count
-        PublicSites = ($analyzedSites | Where-Object { $_.'Site privacy' -eq 'Public' }).Count
-        SitesWithAnyoneLinks = ($analyzedSites | Where-Object { $_.'Anyone link count' -gt 0 }).Count
+        PrivateSitesWithBroadAccess = ($analyzedSites | Where-Object { 
+            $_.'Site privacy' -eq 'Private' -and 
+            (($_.'EEEU permission count' -replace '[^\d]', '') -gt 0 -or ($_.'Anyone link count' -replace '[^\d]', '') -gt 0)
+        }).Count
+        SitesWithAnyoneLinks = ($analyzedSites | Where-Object { ($_.'Anyone link count' -replace '[^\d]', '') -gt 0 }).Count
     }
     
     Write-Host "`nGenerating HTML report..." -ForegroundColor Yellow
@@ -904,7 +977,7 @@ try {
     Write-Host "Report generated: $OutputPath" -ForegroundColor Green
     Write-Host "Total sites analyzed: $($statistics.TotalSites)" -ForegroundColor White
     Write-Host "High risk sites (score 7+): $($statistics.HighRiskSites)" -ForegroundColor Red
-    Write-Host "Public sites: $($statistics.PublicSites)" -ForegroundColor Yellow
+    Write-Host "Private sites with broad access: $($statistics.PrivateSitesWithBroadAccess)" -ForegroundColor Yellow
     Write-Host "Sites with anyone links: $($statistics.SitesWithAnyoneLinks)" -ForegroundColor Yellow
     
     # Show top 5 highest risk sites
