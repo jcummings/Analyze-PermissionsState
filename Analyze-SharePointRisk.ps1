@@ -136,7 +136,8 @@ function Calculate-RiskScore {
     #>
     param(
         [PSCustomObject]$Site,
-        [hashtable]$ScoringConfig
+        [hashtable]$ScoringConfig,
+        [hashtable]$ColumnMap
     )
     
     $score = 0
@@ -151,16 +152,23 @@ function Calculate-RiskScore {
         'Security', 'Admin', 'Internal', 'Restricted'
     )
     
-    $siteName = $Site.'Site name'
-    $siteUrl = $Site.'Site URL'
-    $sitePrivacy = $Site.'Site privacy'
-    $eeeuCount = [int]($Site.'EEEU permission count' -replace '[^\d]', '')
-    $everyoneCount = [int]($Site.'Everyone permission count' -replace '[^\d]', '')
-    $anyoneLinks = [int]($Site.'Anyone link count' -replace '[^\d]', '')
+    $siteName = Get-SafePropertyValue -Object $Site -StandardName 'Site name' -ColumnMap $ColumnMap
+    $siteUrl = Get-SafePropertyValue -Object $Site -StandardName 'Site URL' -ColumnMap $ColumnMap
+    $sitePrivacy = Get-SafePropertyValue -Object $Site -StandardName 'Site privacy' -ColumnMap $ColumnMap
+    $eeeuCountRaw = Get-SafePropertyValue -Object $Site -StandardName 'EEEU permission count' -ColumnMap $ColumnMap
+    $everyoneCountRaw = Get-SafePropertyValue -Object $Site -StandardName 'Everyone permission count' -ColumnMap $ColumnMap
+    $anyoneLinksRaw = Get-SafePropertyValue -Object $Site -StandardName 'Anyone link count' -ColumnMap $ColumnMap
+    $totalUsersRaw = Get-SafePropertyValue -Object $Site -StandardName 'Number of users having access' -ColumnMap $ColumnMap
+    $siteSensitivity = Get-SafePropertyValue -Object $Site -StandardName 'Site sensitivity' -ColumnMap $ColumnMap
+    
+    # Convert to integers, handling null/empty values
+    $eeeuCount = if ($eeeuCountRaw) { [int]($eeeuCountRaw -replace '[^\d]', '') } else { 0 }
+    $everyoneCount = if ($everyoneCountRaw) { [int]($everyoneCountRaw -replace '[^\d]', '') } else { 0 }
+    $anyoneLinks = if ($anyoneLinksRaw) { [int]($anyoneLinksRaw -replace '[^\d]', '') } else { 0 }
+    $totalUsers = if ($totalUsersRaw) { [int]($totalUsersRaw -replace '[^\d]', '') } else { 0 }
     
     # Get unique permissions count if available (this might need to be added to CSV export)
     # For now, we'll use the total user count as a proxy for unique permissions complexity
-    $totalUsers = [int]($Site.'Number of users having access' -replace '[^\d]', '')
     
     # 1. High EEEU Permissions - Sites with many EEEU permissions are risky
     if ($eeeuCount -ge $ScoringConfig.EEEUPermissionThreshold) {
@@ -181,7 +189,7 @@ function Calculate-RiskScore {
     if ($sitePrivacy -eq 'Public') {
         $hasSensitiveTitle = $false
         foreach ($keyword in $sensitiveKeywords) {
-            if ($siteName -match $keyword -or $siteUrl -match $keyword) {
+            if (($siteName -and $siteName -match $keyword) -or ($siteUrl -and $siteUrl -match $keyword)) {
                 $hasSensitiveTitle = $true
                 break
             }
@@ -212,7 +220,7 @@ function Calculate-RiskScore {
     }
     
     # 7. No Sensitivity Label - Reduced weight as it's more of a compliance issue
-    if ([string]::IsNullOrWhiteSpace($Site.'Site sensitivity')) {
+    if ([string]::IsNullOrWhiteSpace($siteSensitivity)) {
         $score += $ScoringConfig.NoSensitivityLabel
         $reasons += "No sensitivity label (+$($ScoringConfig.NoSensitivityLabel))"
     }
@@ -257,7 +265,8 @@ function Generate-HtmlReport {
         [array]$AnalyzedSites,
         [hashtable]$ScoringConfig,
         [hashtable]$Statistics,
-        [string]$OutputPath
+        [string]$OutputPath,
+        [hashtable]$ColumnMap
     )
     
     $html = @"
@@ -629,20 +638,32 @@ function Generate-HtmlReport {
     
     foreach ($site in $AnalyzedSites) {
         $riskInfo = Get-RiskCategory -Score $site.RiskScore
-        $privacy = if ([string]::IsNullOrWhiteSpace($site.'Site privacy')) { "Not Set" } else { $site.'Site privacy' }
-        $siteName = if ([string]::IsNullOrWhiteSpace($site.'Site name')) { "Unnamed Site" } else { $site.'Site name' }
+        
+        # Get values using safe property access
+        $sitePrivacy = Get-SafePropertyValue -Object $site -StandardName 'Site privacy' -ColumnMap $ColumnMap
+        $siteName = Get-SafePropertyValue -Object $site -StandardName 'Site name' -ColumnMap $ColumnMap
+        $siteUrl = Get-SafePropertyValue -Object $site -StandardName 'Site URL' -ColumnMap $ColumnMap
+        $userCount = Get-SafePropertyValue -Object $site -StandardName 'Number of users having access' -ColumnMap $ColumnMap
+        $anyoneLinks = Get-SafePropertyValue -Object $site -StandardName 'Anyone link count' -ColumnMap $ColumnMap
+        $eeeuCount = Get-SafePropertyValue -Object $site -StandardName 'EEEU permission count' -ColumnMap $ColumnMap
+        $everyoneCount = Get-SafePropertyValue -Object $site -StandardName 'Everyone permission count' -ColumnMap $ColumnMap
+        
+        # Handle null/empty values
+        $privacy = if ([string]::IsNullOrWhiteSpace($sitePrivacy)) { "Not Set" } else { $sitePrivacy }
+        $displayName = if ([string]::IsNullOrWhiteSpace($siteName)) { "Unnamed Site" } else { $siteName }
+        $displayUrl = if ([string]::IsNullOrWhiteSpace($siteUrl)) { "No URL" } else { $siteUrl }
         
         $html += @"
                 <tr data-risk="$($riskInfo.Category)">
                     <td style="font-weight: bold; font-size: 16px;">$($site.RiskScore)</td>
                     <td><span class="risk-badge" style="background-color: $($riskInfo.Color);">$($riskInfo.Label)</span></td>
-                    <td>$(ConvertTo-HtmlSafe $siteName)</td>
-                    <td><a href="$($site.'Site URL')" target="_blank" class="site-url">$(ConvertTo-HtmlSafe $site.'Site URL')</a></td>
+                    <td>$(ConvertTo-HtmlSafe $displayName)</td>
+                    <td><a href="$displayUrl" target="_blank" class="site-url">$(ConvertTo-HtmlSafe $displayUrl)</a></td>
                     <td>$privacy</td>
-                    <td>$($site.'Number of users having access')</td>
-                    <td>$($site.'Anyone link count')</td>
-                    <td>$($site.'EEEU permission count')</td>
-                    <td>$($site.'Everyone permission count')</td>
+                    <td>$($userCount -replace '[^\d]', '')</td>
+                    <td>$($anyoneLinks -replace '[^\d]', '')</td>
+                    <td>$($eeeuCount -replace '[^\d]', '')</td>
+                    <td>$($everyoneCount -replace '[^\d]', '')</td>
                     <td class="risk-reasons">$(ConvertTo-HtmlSafe $site.RiskReasons)</td>
                 </tr>
 "@
@@ -898,6 +919,93 @@ function Generate-HtmlReport {
     $html | Out-File -FilePath $OutputPath -Encoding UTF8
 }
 
+function Test-CsvColumns {
+    <#
+    .SYNOPSIS
+    Validates CSV columns and provides mapping for different formats
+    #>
+    param(
+        [array]$CsvData
+    )
+    
+    if ($CsvData.Count -eq 0) {
+        throw "CSV file is empty or could not be read"
+    }
+    
+    $firstRow = $CsvData[0]
+    $actualColumns = $firstRow.PSObject.Properties.Name
+    
+    Write-Host "`nDetected CSV columns:" -ForegroundColor Cyan
+    $actualColumns | ForEach-Object { Write-Host "  - $_" -ForegroundColor White }
+    
+    # Define required columns and their possible variations
+    $columnMappings = @{
+        'Site URL' = @('Site URL', 'SiteUrl', 'Site Url', 'URL', 'Url')
+        'Site name' = @('Site name', 'Site Name', 'SiteName', 'Name', 'Title')
+        'Site privacy' = @('Site privacy', 'Site Privacy', 'Privacy', 'Site Type')
+        'Number of users having access' = @('Number of users having access', 'Users with access', 'User Count', 'Users', 'Total Users')
+        'EEEU permission count' = @('EEEU permission count', 'EEEU permissions', 'EEEU', 'Everyone Except External Users')
+        'Everyone permission count' = @('Everyone permission count', 'Everyone permissions', 'Everyone')
+        'Anyone link count' = @('Anyone link count', 'Anyone links', 'Anonymous links', 'External links')
+        'Site sensitivity' = @('Site sensitivity', 'Sensitivity label', 'Sensitivity Label', 'Label')
+    }
+    
+    $mappedColumns = @{}
+    $missingColumns = @()
+    
+    foreach ($requiredColumn in $columnMappings.Keys) {
+        $found = $false
+        foreach ($variation in $columnMappings[$requiredColumn]) {
+            if ($actualColumns -contains $variation) {
+                $mappedColumns[$requiredColumn] = $variation
+                $found = $true
+                break
+            }
+        }
+        if (-not $found) {
+            $missingColumns += $requiredColumn
+        }
+    }
+    
+    if ($missingColumns.Count -gt 0) {
+        Write-Host "`nMissing required columns:" -ForegroundColor Red
+        $missingColumns | ForEach-Object { Write-Host "  - $_" -ForegroundColor Red }
+        Write-Host "`nThis may not be a SharePoint Advanced Management Site Permissions Report." -ForegroundColor Yellow
+        Write-Host "Expected columns: Site URL, Site name, Site privacy, Number of users having access," -ForegroundColor Yellow
+        Write-Host "EEEU permission count, Everyone permission count, Anyone link count, Site sensitivity" -ForegroundColor Yellow
+        throw "Required columns missing from CSV file"
+    }
+    
+    Write-Host "`nColumn mapping successful:" -ForegroundColor Green
+    foreach ($mapping in $mappedColumns.GetEnumerator()) {
+        if ($mapping.Key -ne $mapping.Value) {
+            Write-Host "  $($mapping.Key) -> $($mapping.Value)" -ForegroundColor Green
+        }
+    }
+    
+    return $mappedColumns
+}
+
+function Get-SafePropertyValue {
+    <#
+    .SYNOPSIS
+    Safely gets a property value with fallback to mapped column name
+    #>
+    param(
+        [PSCustomObject]$Object,
+        [string]$StandardName,
+        [hashtable]$ColumnMap
+    )
+    
+    $actualColumnName = if ($ColumnMap.ContainsKey($StandardName)) { $ColumnMap[$StandardName] } else { $StandardName }
+    
+    if ($Object.PSObject.Properties[$actualColumnName]) {
+        return $Object.$actualColumnName
+    } else {
+        return $null
+    }
+}
+
 # Helper function for HTML encoding
 function ConvertTo-HtmlSafe {
     param([string]$Text)
@@ -929,18 +1037,56 @@ try {
     $sites = Import-Csv -Path $CsvPath
     Write-Host "Loaded $($sites.Count) raw entries" -ForegroundColor Green
     
+    # Validate and map CSV columns
+    $columnMap = Test-CsvColumns -CsvData $sites
+    
     Write-Host "`nDeduplicating and aggregating site data..." -ForegroundColor Yellow
     # Group by Site URL and aggregate data for each unique site
-    $uniqueSites = $sites | Group-Object "Site URL" | ForEach-Object {
+    $uniqueSites = $sites | Group-Object { Get-SafePropertyValue -Object $_ -StandardName 'Site URL' -ColumnMap $columnMap } | ForEach-Object {
         $siteGroup = $_.Group
         $firstEntry = $siteGroup[0]  # Use first entry as base
         
-        # Aggregate numeric values (take maximum values to represent worst-case risk)
+        # Create aggregated site object
         $aggregatedSite = $firstEntry.PSObject.Copy()
-        $aggregatedSite."Number of users having access" = ($siteGroup | Measure-Object "Number of users having access" -Maximum).Maximum
-        $aggregatedSite."EEEU permission count" = ($siteGroup | Measure-Object "EEEU permission count" -Maximum).Maximum  
-        $aggregatedSite."Everyone permission count" = ($siteGroup | Measure-Object "Everyone permission count" -Maximum).Maximum
-        $aggregatedSite."Anyone link count" = ($siteGroup | Measure-Object "Anyone link count" -Maximum).Maximum
+        
+        # Aggregate numeric values (take maximum values to represent worst-case risk)
+        $userAccessColumn = $columnMap['Number of users having access']
+        $eeeuColumn = $columnMap['EEEU permission count']
+        $everyoneColumn = $columnMap['Everyone permission count']
+        $anyoneColumn = $columnMap['Anyone link count']
+        
+        try {
+            $userCounts = $siteGroup | Where-Object { $_.$userAccessColumn -ne $null -and $_.$userAccessColumn -ne '' } | ForEach-Object { [int]($_.$userAccessColumn -replace '[^\d]', '') }
+            if ($userCounts) {
+                $aggregatedSite.$userAccessColumn = ($userCounts | Measure-Object -Maximum).Maximum
+            } else {
+                $aggregatedSite.$userAccessColumn = 0
+            }
+            
+            $eeeuCounts = $siteGroup | Where-Object { $_.$eeeuColumn -ne $null -and $_.$eeeuColumn -ne '' } | ForEach-Object { [int]($_.$eeeuColumn -replace '[^\d]', '') }
+            if ($eeeuCounts) {
+                $aggregatedSite.$eeeuColumn = ($eeeuCounts | Measure-Object -Maximum).Maximum
+            } else {
+                $aggregatedSite.$eeeuColumn = 0
+            }
+            
+            $everyoneCounts = $siteGroup | Where-Object { $_.$everyoneColumn -ne $null -and $_.$everyoneColumn -ne '' } | ForEach-Object { [int]($_.$everyoneColumn -replace '[^\d]', '') }
+            if ($everyoneCounts) {
+                $aggregatedSite.$everyoneColumn = ($everyoneCounts | Measure-Object -Maximum).Maximum
+            } else {
+                $aggregatedSite.$everyoneColumn = 0
+            }
+            
+            $anyoneCounts = $siteGroup | Where-Object { $_.$anyoneColumn -ne $null -and $_.$anyoneColumn -ne '' } | ForEach-Object { [int]($_.$anyoneColumn -replace '[^\d]', '') }
+            if ($anyoneCounts) {
+                $aggregatedSite.$anyoneColumn = ($anyoneCounts | Measure-Object -Maximum).Maximum
+            } else {
+                $aggregatedSite.$anyoneColumn = 0
+            }
+        } catch {
+            Write-Warning "Error aggregating data for site group: $($_.Exception.Message)"
+            # Use first entry values as fallback
+        }
         
         return $aggregatedSite
     }
@@ -951,7 +1097,7 @@ try {
     $analyzedSites = @()
     
     foreach ($site in $uniqueSites) {
-        $riskResult = Calculate-RiskScore -Site $site -ScoringConfig $scoringConfig
+        $riskResult = Calculate-RiskScore -Site $site -ScoringConfig $scoringConfig -ColumnMap $columnMap
         $analyzedSite = $site | Select-Object *, @{n='RiskScore';e={$riskResult.Score}}, @{n='RiskReasons';e={$riskResult.Reasons}}
         $analyzedSites += $analyzedSite
     }
@@ -964,14 +1110,23 @@ try {
         TotalSites = $analyzedSites.Count
         HighRiskSites = ($analyzedSites | Where-Object { $_.RiskScore -ge 7 }).Count
         PrivateSitesWithBroadAccess = ($analyzedSites | Where-Object { 
-            $_.'Site privacy' -eq 'Private' -and 
-            (($_.'EEEU permission count' -replace '[^\d]', '') -gt 0 -or ($_.'Anyone link count' -replace '[^\d]', '') -gt 0)
+            $sitePrivacy = Get-SafePropertyValue -Object $_ -StandardName 'Site privacy' -ColumnMap $columnMap
+            $eeeuCount = Get-SafePropertyValue -Object $_ -StandardName 'EEEU permission count' -ColumnMap $columnMap
+            $anyoneCount = Get-SafePropertyValue -Object $_ -StandardName 'Anyone link count' -ColumnMap $columnMap
+            $eeeuNum = if ($eeeuCount) { [int]($eeeuCount -replace '[^\d]', '') } else { 0 }
+            $anyoneNum = if ($anyoneCount) { [int]($anyoneCount -replace '[^\d]', '') } else { 0 }
+            
+            $sitePrivacy -eq 'Private' -and ($eeeuNum -gt 0 -or $anyoneNum -gt 0)
         }).Count
-        SitesWithAnyoneLinks = ($analyzedSites | Where-Object { ($_.'Anyone link count' -replace '[^\d]', '') -gt 0 }).Count
+        SitesWithAnyoneLinks = ($analyzedSites | Where-Object { 
+            $anyoneCount = Get-SafePropertyValue -Object $_ -StandardName 'Anyone link count' -ColumnMap $columnMap
+            $anyoneNum = if ($anyoneCount) { [int]($anyoneCount -replace '[^\d]', '') } else { 0 }
+            $anyoneNum -gt 0
+        }).Count
     }
     
     Write-Host "`nGenerating HTML report..." -ForegroundColor Yellow
-    Generate-HtmlReport -AnalyzedSites $analyzedSites -ScoringConfig $scoringConfig -Statistics $statistics -OutputPath $OutputPath
+    Generate-HtmlReport -AnalyzedSites $analyzedSites -ScoringConfig $scoringConfig -Statistics $statistics -OutputPath $OutputPath -ColumnMap $columnMap
     
     Write-Host "`n=== Analysis Complete ===" -ForegroundColor Green
     Write-Host "Report generated: $OutputPath" -ForegroundColor Green
@@ -984,8 +1139,9 @@ try {
     Write-Host "`nTop 5 Highest Risk Sites:" -ForegroundColor Cyan
     $topRisk = $analyzedSites | Select-Object -First 5
     foreach ($site in $topRisk) {
-        $siteName = if ([string]::IsNullOrWhiteSpace($site.'Site name')) { "Unnamed Site" } else { $site.'Site name' }
-        Write-Host "  $($site.RiskScore) - $siteName" -ForegroundColor White
+        $siteName = Get-SafePropertyValue -Object $site -StandardName 'Site name' -ColumnMap $columnMap
+        $displayName = if ([string]::IsNullOrWhiteSpace($siteName)) { "Unnamed Site" } else { $siteName }
+        Write-Host "  $($site.RiskScore) - $displayName" -ForegroundColor White
     }
     
     # Open report in default browser
