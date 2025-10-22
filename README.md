@@ -91,6 +91,13 @@ This tool is specifically designed to analyze the **SharePoint Advanced Manageme
 - ⬆️⬇️ **Column sorting** with visual indicators (click any column header)
 - 🔄 **Bidirectional sort** (toggle ascending/descending with multiple clicks)
 
+### 🎯 **Action Guidance**
+- 📋 **Separate guidance page** with comprehensive action plan
+- 🔗 **Integrated link** from main report to avoid cluttering data view
+- 📖 **7-step methodology** for systematic risk remediation
+- 💡 **Implementation tips** and best practices
+- 🏢 **Enterprise integration** guidance for SharePoint Advanced Management
+
 </td>
 <td width="50%">
 
@@ -245,9 +252,11 @@ Deduplicated to 4105 unique sites
 Analyzing risk scores...
 
 Generating HTML report...
+Generating guidance page...
 
 === Analysis Complete ===
 Report generated: .\risk_analysis.html
+Guidance page generated: .\risk_analysis_guidance.html
 Total sites analyzed: 4105
 High risk sites (score 7+): 25
 Private sites with broad access: 16
@@ -265,9 +274,27 @@ Opening report in default browser...
 
 </details>
 
+### 🎨 **Report Structure**
+
+The tool generates **two complementary HTML files**:
+
+**📊 Main Risk Analysis Report** (`*_report.html`)
+- Interactive dashboard with risk data and charts
+- Sortable/filterable table of all analyzed sites
+- Summary statistics and methodology
+- Clean focus on data analysis
+
+**📋 Action Guidance Page** (`*_report_guidance.html`)
+- Comprehensive 7-step remediation methodology
+- Detailed implementation guidance
+- Best practices and enterprise integration tips
+- Linked from main report for easy access
+
+> **💡 Design Philosophy**: Keep the data analysis clean and uncluttered while providing comprehensive guidance in a separate, dedicated space.
+
 ### 🎨 **HTML Report Features**
 
-The generated HTML report includes:
+The main analysis report includes:
 
 **📊 Dashboard Summary Cards**
 - Average Risk Score, Critical/High Risk Count, Highest Risk Score

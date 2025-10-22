@@ -503,88 +503,74 @@ function Generate-HtmlReport {
             height: 20px; 
             border-radius: 10px; 
         }
-        .next-steps {
+        .guidance-link {
             background-color: #f8f9fa;
             padding: 30px;
             border-radius: 10px;
             margin-bottom: 30px;
             border: 1px solid #e9ecef;
-        }
-        .next-steps h2 {
-            color: #495057;
-            margin-top: 0;
-            margin-bottom: 20px;
             text-align: center;
         }
-        .next-steps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
+        .guidance-link h2 {
+            color: #495057;
+            margin-top: 0;
+            margin-bottom: 15px;
         }
-        .step-card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-left: 4px solid #007bff;
-            position: relative;
+        .guidance-link p {
+            color: #6c757d;
+            margin-bottom: 25px;
         }
-        .step-card.advanced {
-            border-left-color: #28a745;
-            background: linear-gradient(135deg, #f8fff9 0%, #e8f5e8 100%);
-        }
-        .step-number {
-            position: absolute;
-            top: -10px;
-            left: 15px;
-            background: #007bff;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
+        .guidance-button {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-weight: bold;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+            transition: all 0.3s ease;
+            max-width: 500px;
+        }
+        .guidance-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,123,255,0.4);
+            text-decoration: none;
+            color: white;
+        }
+        .guidance-icon {
+            font-size: 2em;
+            margin-right: 20px;
+        }
+        .guidance-text {
+            flex-grow: 1;
+            text-align: left;
+        }
+        .guidance-text h3 {
+            margin: 0 0 5px 0;
+            font-size: 18px;
+        }
+        .guidance-text p {
+            margin: 0;
+            opacity: 0.9;
             font-size: 14px;
         }
-        .step-card.advanced .step-number {
-            background: #28a745;
-        }
-        .step-card h3 {
-            margin: 10px 0 15px 0;
-            color: #343a40;
-            font-size: 16px;
-        }
-        .step-card ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-        .step-card li {
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-        .step-card strong {
-            color: #495057;
-        }
-        .next-steps-footer {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border-left: 4px solid #2196f3;
-        }
-        .next-steps-footer p {
-            margin: 10px 0;
-            color: #1565c0;
+        .guidance-arrow {
+            font-size: 1.5em;
+            margin-left: 20px;
         }
         @media (max-width: 768px) {
-            .next-steps-grid {
-                grid-template-columns: 1fr;
+            .guidance-button {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
             }
-            .step-card {
-                min-height: auto;
+            .guidance-icon, .guidance-arrow {
+                margin: 0;
+            }
+            .guidance-text {
+                margin: 10px 0;
+                text-align: center;
             }
         }
         @media (max-width: 768px) {
@@ -665,105 +651,17 @@ function Generate-HtmlReport {
             <p><strong>Note:</strong> Public sites are internal-only by default and not inherently risky. Focus is on inappropriate broad access patterns and sensitive content exposure.</p>
         </div>
         
-        <div class="next-steps">
-            <h2>🎯 Recommended Next Steps</h2>
-            <p><strong>Use this analysis to take concrete action on SharePoint security risks:</strong></p>
-            
-            <div class="next-steps-grid">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <h3>🔍 Analyze Key Risk Indicators</h3>
-                    <ul>
-                        <li><strong>Site Privacy:</strong> Focus on Public vs. Private site configurations</li>
-                        <li><strong>External Sharing:</strong> Review sites with external sharing enabled</li>
-                        <li><strong>EEEU & Everyone Permissions:</strong> Identify broad access patterns</li>
-                        <li><strong>Unique Permissions:</strong> Look for broken inheritance patterns</li>
-                        <li><strong>Sharing Links:</strong> Audit "Anyone" and "People in Org" link counts</li>
-                    </ul>
+        <div class="guidance-link">
+            <h2>What to Do Next?</h2>
+            <p>Now that you've identified SharePoint security risks, it's time to take action.</p>
+            <a href="#" onclick="openGuidance()" class="guidance-button">
+                <span class="guidance-icon">📋</span>
+                <div class="guidance-text">
+                    <h3>View Complete Action Plan</h3>
+                    <p>Get step-by-step guidance for addressing these risks</p>
                 </div>
-                
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <h3>🚨 Target High-Risk Sites</h3>
-                    <ul>
-                        <li><strong>EEEU/Everyone in Groups:</strong> Sites with broad permissions in Members/Visitors</li>
-                        <li><strong>Permission Sprawl:</strong> High unique permissions or link counts</li>
-                        <li><strong>Classic Sites:</strong> STS#0 templates often have stale permissions</li>
-                        <li><strong>Sensitive Content:</strong> Public sites with HR/Finance content</li>
-                    </ul>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <h3>👥 Engage Site Owners</h3>
-                    <ul>
-                        <li><strong>Site Access Reviews:</strong> Use SharePoint Advanced Management delegation</li>
-                        <li><strong>Owner Reports:</strong> Send targeted reports to site owners</li>
-                        <li><strong>Manual Outreach:</strong> Provide guidance for high-risk sites</li>
-                        <li><strong>Access Confirmation:</strong> Have owners review and remove unnecessary permissions</li>
-                    </ul>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-number">4</div>
-                    <h3>🛡️ Apply Governance Controls</h3>
-                    <ul>
-                        <li><strong>Remove Broad Access:</strong> Eliminate EEEU/Everyone where not required</li>
-                        <li><strong>External Sharing Audit:</strong> Disable unnecessary external sharing</li>
-                        <li><strong>Simplify Permissions:</strong> Reduce broken inheritance</li>
-                        <li><strong>Sensitivity Labels:</strong> Apply labels to confidential content</li>
-                        <li><strong>Restricted Access Control:</strong> Immediate lockdown for critical sites</li>
-                        <li><strong>Restricted Content Discovery:</strong> Hide sensitive sites from Copilot/search</li>
-                    </ul>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-number">5</div>
-                    <h3>🧹 Address Stale Sites</h3>
-                    <ul>
-                        <li><strong>Inactive Sites Policy:</strong> Archive or delete unused sites</li>
-                        <li><strong>Site Ownership Policy:</strong> Assign new owners to "ownerless" sites</li>
-                        <li><strong>Regular Cleanup:</strong> Establish recurring governance processes</li>
-                    </ul>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-number">6</div>
-                    <h3>🔒 Prevent Future Oversharing</h3>
-                    <ul>
-                        <li><strong>Default Link Type:</strong> Change to "Specific People" only</li>
-                        <li><strong>Global EEEU Policy:</strong> Disable organization-wide if suitable</li>
-                        <li><strong>User Education:</strong> Train on proper sharing practices</li>
-                        <li><strong>Automated Governance:</strong> Schedule recurring DAG reports and reviews</li>
-                    </ul>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-number">7</div>
-                    <h3>📢 Document & Communicate</h3>
-                    <ul>
-                        <li><strong>Stakeholder Updates:</strong> Inform about changes and lockdowns</li>
-                        <li><strong>Access Instructions:</strong> Provide clear guidance for restricted sites</li>
-                        <li><strong>Change Documentation:</strong> Track governance actions taken</li>
-                    </ul>
-                </div>
-                
-                <div class="step-card advanced">
-                    <div class="step-number">+</div>
-                    <h3>⚡ Advanced Actions</h3>
-                    <ul>
-                        <li><strong>PowerShell Automation:</strong> Schedule DAG reports and CSV exports</li>
-                        <li><strong>Block Download Policy:</strong> Prevent offline copies for sensitive sites</li>
-                        <li><strong>Conditional Access:</strong> Implement location/device restrictions</li>
-                        <li><strong>DLP Integration:</strong> Link with Data Loss Prevention policies</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="next-steps-footer">
-                <p><strong>💡 Pro Tip:</strong> Start with Critical and High risk sites first, then work your way down. Focus on sites with sensitive content or broad external access patterns.</p>
-                <p><strong>📊 Tracking:</strong> Use this report as a baseline and re-run monthly to track improvement in your SharePoint security posture.</p>
-            </div>
+                <span class="guidance-arrow">→</span>
+            </a>
         </div>
         
         <div class="legend">
@@ -1086,6 +984,11 @@ function Generate-HtmlReport {
             window.URL.revokeObjectURL(url);
         }
         
+        function openGuidance() {
+            const guidanceUrl = window.location.href.replace('.html', '_guidance.html');
+            window.open(guidanceUrl, '_blank');
+        }
+        
         // Initial sort indicator (data is already sorted by PowerShell)
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
@@ -1189,6 +1092,327 @@ function Get-SafePropertyValue {
     } else {
         return $null
     }
+}
+
+function Generate-GuidancePage {
+    <#
+    .SYNOPSIS
+    Generates a separate HTML guidance page with next steps
+    #>
+    param(
+        [string]$OutputPath
+    )
+    
+    $guidancePath = $OutputPath -replace '\.html$', '_guidance.html'
+    
+    $html = @"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SharePoint Governance Action Plan</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: #f8f9fa; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            padding: 30px; 
+        }
+        h1 { 
+            color: #343a40; 
+            text-align: center; 
+            margin-bottom: 30px; 
+            border-bottom: 3px solid #007bff; 
+            padding-bottom: 15px; 
+        }
+        .back-link {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+        .back-link:hover {
+            background: #0056b3;
+            text-decoration: none;
+            color: white;
+        }
+        .intro {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196f3;
+        }
+        .step-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+        }
+        .step-section.advanced {
+            border-left-color: #28a745;
+            background: linear-gradient(135deg, #f8fff9 0%, #e8f5e8 100%);
+        }
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .step-number {
+            background: #007bff;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+        .step-section.advanced .step-number {
+            background: #28a745;
+        }
+        .step-title {
+            color: #343a40;
+            margin: 0;
+            font-size: 24px;
+        }
+        .step-content ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .step-content li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+        }
+        .step-content li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .step-content strong {
+            color: #495057;
+        }
+        .tips-section {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .tips-section h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .enterprise-note {
+            background: #d1ecf1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 4px solid #17a2b8;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .container { 
+                padding: 15px; 
+            }
+            .step-title {
+                font-size: 20px;
+            }
+            .step-number {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-link">← Back to Risk Analysis Report</a>
+        
+        <h1>SharePoint Governance Action Plan</h1>
+        
+        <div class="intro">
+            <h3>From Analysis to Action</h3>
+            <p>You've identified SharePoint security risks - now it's time to take systematic action. This guide provides a proven methodology for transforming your risk analysis into meaningful security improvements.</p>
+            <p><strong>Start with Critical and High risk sites first, then work your way down the priority list.</strong></p>
+        </div>
+        
+        <div class="step-section">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <h2 class="step-title">Analyze Key Risk Indicators</h2>
+            </div>
+            <div class="step-content">
+                <p>Focus on the most critical data points in your risk analysis report:</p>
+                <ul>
+                    <li><strong>Site Privacy Patterns:</strong> Compare Public vs. Private site configurations</li>
+                    <li><strong>External Sharing Status:</strong> Review sites with external sharing enabled</li>
+                    <li><strong>EEEU & Everyone Permissions:</strong> Identify inappropriate broad access patterns</li>
+                    <li><strong>Unique Permissions:</strong> Look for broken inheritance (permission sprawl)</li>
+                    <li><strong>Sharing Links Audit:</strong> Review "Anyone" and "People in Org" link counts</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="step-section">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <h2 class="step-title">Target High-Risk Sites</h2>
+            </div>
+            <div class="step-content">
+                <p>Prioritize sites based on these critical patterns:</p>
+                <ul>
+                    <li><strong>EEEU/Everyone in Groups:</strong> Sites with broad permissions in Members/Visitors groups</li>
+                    <li><strong>Permission Sprawl:</strong> High unique permissions count or excessive sharing links</li>
+                    <li><strong>Classic Sites:</strong> STS#0 templates often accumulate stale permissions over time</li>
+                    <li><strong>Sensitive Public Sites:</strong> Public sites containing HR, Finance, or Legal content</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="step-section">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <h2 class="step-title">Engage Site Owners</h2>
+            </div>
+            <div class="step-content">
+                <p>Delegate governance through owner empowerment:</p>
+                <ul>
+                    <li><strong>Site Access Reviews:</strong> Use SharePoint Advanced Management's built-in delegation features</li>
+                    <li><strong>Targeted Owner Reports:</strong> Send specific site analysis to responsible owners</li>
+                    <li><strong>Manual Outreach:</strong> Provide guidance and training for high-risk site owners</li>
+                    <li><strong>Access Confirmation:</strong> Have owners review and remove unnecessary permissions</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="step-section">
+            <div class="step-header">
+                <div class="step-number">4</div>
+                <h2 class="step-title">Apply Governance Controls</h2>
+            </div>
+            <div class="step-content">
+                <p>Implement technical controls to reduce risk:</p>
+                <ul>
+                    <li><strong>Remove Broad Access:</strong> Eliminate EEEU/Everyone permissions where inappropriate</li>
+                    <li><strong>External Sharing Audit:</strong> Disable external sharing for internal-only content</li>
+                    <li><strong>Simplify Permissions:</strong> Reduce broken inheritance and complex permission structures</li>
+                    <li><strong>Sensitivity Labels:</strong> Apply appropriate data classification labels</li>
+                    <li><strong>Restricted Access Control (RAC):</strong> Immediate lockdown for critical sites</li>
+                    <li><strong>Restricted Content Discovery (RCD):</strong> Hide sensitive sites from Copilot and org-wide search</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="step-section">
+            <div class="step-header">
+                <div class="step-number">5</div>
+                <h2 class="step-title">Address Stale or Ownerless Sites</h2>
+            </div>
+            <div class="step-content">
+                <p>Clean up abandoned content:</p>
+                <ul>
+                    <li><strong>Inactive Sites Policy:</strong> Archive or delete sites that haven't been accessed recently</li>
+                    <li><strong>Site Ownership Policy:</strong> Assign new owners to "ownerless" sites</li>
+                    <li><strong>Regular Cleanup:</strong> Establish recurring governance processes</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="step-section">
+            <div class="step-header">
+                <div class="step-number">6</div>
+                <h2 class="step-title">Prevent Future Oversharing</h2>
+            </div>
+            <div class="step-content">
+                <p>Implement proactive controls:</p>
+                <ul>
+                    <li><strong>Default Link Settings:</strong> Change default sharing to "Specific People" only</li>
+                    <li><strong>Global EEEU Policy:</strong> Consider disabling organization-wide EEEU if suitable</li>
+                    <li><strong>User Education:</strong> Train users on proper SharePoint sharing practices</li>
+                    <li><strong>Automated Governance:</strong> Schedule recurring Data Access Governance (DAG) reports and reviews</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="step-section">
+            <div class="step-header">
+                <div class="step-number">7</div>
+                <h2 class="step-title">Document & Communicate Changes</h2>
+            </div>
+            <div class="step-content">
+                <p>Ensure stakeholder alignment:</p>
+                <ul>
+                    <li><strong>Stakeholder Updates:</strong> Inform users about governance changes and site lockdowns</li>
+                    <li><strong>Access Instructions:</strong> Provide clear guidance for requesting access to restricted sites</li>
+                    <li><strong>Change Documentation:</strong> Track all governance actions for compliance and audit purposes</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="step-section advanced">
+            <div class="step-header">
+                <div class="step-number">+</div>
+                <h2 class="step-title">Advanced Actions (Optional)</h2>
+            </div>
+            <div class="step-content">
+                <p>For organizations with advanced governance needs:</p>
+                <ul>
+                    <li><strong>PowerShell Automation:</strong> Schedule automated DAG reports and detailed CSV exports</li>
+                    <li><strong>Block Download Policy:</strong> Prevent offline file copies for highly sensitive sites</li>
+                    <li><strong>Conditional Access:</strong> Implement location or device-based access restrictions</li>
+                    <li><strong>DLP Integration:</strong> Link governance policies with Data Loss Prevention controls</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="tips-section">
+            <h3>Implementation Tips</h3>
+            <ul>
+                <li><strong>Start Small:</strong> Begin with Critical and High risk sites, then work down the priority list</li>
+                <li><strong>Track Progress:</strong> Re-run this analysis monthly to measure security posture improvements</li>
+                <li><strong>Collaborate:</strong> Work with site owners rather than imposing changes unilaterally</li>
+                <li><strong>Measure Success:</strong> Use decreasing high-risk site counts as your primary success metric</li>
+            </ul>
+        </div>
+        
+        <div class="enterprise-note">
+            <h3>Enterprise Integration</h3>
+            <p><strong>This governance methodology integrates seamlessly with SharePoint Advanced Management, Microsoft Purview, and broader Microsoft 365 governance strategies.</strong></p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="javascript:history.back()" class="back-link">← Return to Risk Analysis Report</a>
+        </div>
+    </div>
+</body>
+</html>
+"@
+    
+    $html | Out-File -FilePath $guidancePath -Encoding UTF8
+    return $guidancePath
 }
 
 # Helper function for HTML encoding
@@ -1313,8 +1537,12 @@ try {
     Write-Host "`nGenerating HTML report..." -ForegroundColor Yellow
     Generate-HtmlReport -AnalyzedSites $analyzedSites -ScoringConfig $scoringConfig -Statistics $statistics -OutputPath $OutputPath -ColumnMap $columnMap
     
+    Write-Host "Generating guidance page..." -ForegroundColor Yellow
+    $guidancePath = Generate-GuidancePage -OutputPath $OutputPath
+    
     Write-Host "`n=== Analysis Complete ===" -ForegroundColor Green
     Write-Host "Report generated: $OutputPath" -ForegroundColor Green
+    Write-Host "Guidance page generated: $guidancePath" -ForegroundColor Green
     Write-Host "Total sites analyzed: $($statistics.TotalSites)" -ForegroundColor White
     Write-Host "High risk sites (score 7+): $($statistics.HighRiskSites)" -ForegroundColor Red
     Write-Host "Private sites with broad access: $($statistics.PrivateSitesWithBroadAccess)" -ForegroundColor Yellow
