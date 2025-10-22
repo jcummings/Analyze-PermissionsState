@@ -41,10 +41,10 @@
 # 2. Run analysis with default scoring
 .\Analyze-SharePointRisk.ps1 -CsvPath ".\your-permissions-report.csv"
 
-# 3. View interactive HTML report (opens automatically)
-#    - Click column headers to sort data ⬆️⬇️
-#    - Use search box to filter results 🔍
-#    - Export filtered data to CSV or JSON 📤
+# 3. View interactive HTML reports (both open automatically)
+#    📊 Main Report: Risk analysis with sortable data table ⬆️⬇️
+#    📖 Guidance Page: 7-step action plan and remediation guide
+#    🔍 Use search box to filter results, export to CSV/JSON 📤
 ```
 
 ## 📥 Data Source
@@ -93,10 +93,12 @@ This tool is specifically designed to analyze the **SharePoint Advanced Manageme
 
 ### 🎯 **Action Guidance**
 - 📋 **Separate guidance page** with comprehensive action plan
-- 🔗 **Integrated link** from main report to avoid cluttering data view
+- 🔗 **Integrated navigation** from main report to guidance page
 - 📖 **7-step methodology** for systematic risk remediation
 - 💡 **Implementation tips** and best practices
 - 🏢 **Enterprise integration** guidance for SharePoint Advanced Management
+- ↩️ **Smart navigation** - guidance page opens in new tab with working back links
+- 🎨 **Professional styling** with visual step indicators and checklists
 
 </td>
 <td width="50%">
@@ -186,7 +188,35 @@ Would you like to customize these scoring weights? (y/N):
 
 </details>
 
-## 📁 Input Data Format
+## � Report Output Structure
+
+The tool generates **two HTML files** for a comprehensive analysis experience:
+
+### 📊 **Main Risk Analysis Report** (`your-report.html`)
+- 🎯 **Risk Analysis Dashboard** with summary statistics and distribution chart
+- 📋 **Interactive Data Table** with sortable columns and search functionality
+- 🔍 **Risk Level Filtering** dropdown to focus on specific risk categories
+- 📤 **Export Functions** (CSV and JSON) for filtered data
+- 🎨 **Color-coded risk levels** for quick visual assessment
+- 🔗 **Guidance Link** prominent button to access action plan
+
+### 📖 **Action Guidance Page** (`your-report_guidance.html`)
+- 🎯 **7-Step Remediation Methodology** with detailed implementation guidance
+- ✅ **Visual Checklists** with professional styling and step indicators
+- 💡 **Best Practices** for SharePoint governance and security
+- 🏢 **Enterprise Integration** tips for SharePoint Advanced Management
+- ↩️ **Working Navigation** back to main report (closes tab or navigates)
+- 📱 **Mobile-Responsive** design for reading on any device
+
+### 🔄 **Navigation Flow**
+1. Run script → Main report opens automatically
+2. Click **"View Complete Action Plan"** button → Guidance opens in new tab
+3. Click **"Back to Risk Analysis Report"** → Returns to main report
+4. Both files can be bookmarked and shared independently
+
+> 💡 **Pro Tip**: The separation keeps your data analysis clean while providing comprehensive guidance when needed!
+
+## �📁 Input Data Format
 
 > 📋 **Required Source**: SharePoint Advanced Management - Site Permissions Report CSV
 
@@ -362,6 +392,8 @@ Risk Score | Risk Level    | Site Name           | Site URL                    |
 </div>
 
 ## 🎯 Next Steps & Action Plan
+
+> 📖 **Complete Guidance Available**: After generating your report, click the **"View Complete Action Plan"** button in the main report to access a comprehensive 7-step remediation guide in a separate page.
 
 Once you've generated your risk analysis report, use these actionable steps to improve your SharePoint security posture:
 
