@@ -111,20 +111,33 @@ This tool is specifically designed to analyze the **SharePoint Advanced Manageme
 
 ## ⚙️ Default Scoring Methodology
 
+Our risk scoring algorithm focuses on **actual SharePoint security risks** rather than architectural patterns that aren't inherently dangerous.
+
 <div align="center">
 
 | 🚨 Risk Factor | 📊 Default Score | 💡 Why It Matters |
 |----------------|:----------------:|-------------------|
-| 🌐 **Public Site** | **+3 points** | Visible to anyone on the internet |
-| 👥 **EEEU Permissions Present** | **+3 points** | All organization users can access |
-| 🔓 **Everyone Permissions Present** | **+3 points** | External users may have access |
-| 🔗 **Anyone Links Present** | **+2 points** | Anonymous sharing links exist |
-| 🏷️ **No Sensitivity Label** | **+2 points** | Missing data classification |
-| 📈 **≥500 Users with Access** | **+2 points** | Large user base increases risk |
+| 🔴 **High EEEU Permissions (10+)** | **+4 points** | Excessive broad internal access |
+| � **Private Site + EEEU/External** | **+3 points** | Private sites shouldn't have broad access |
+| 🎯 **Public Site + Sensitive Title** | **+5 points** | HR, Finance, Legal content shouldn't be public |
+| 🔓 **Everyone Permissions Present** | **+3 points** | All users (including future hires) can access |
+| 🔗 **Anyone Links Present** | **+2 points** | Anonymous external sharing enabled |
+| 📊 **Complex Permissions (50+ users + EEEU)** | **+3 points** | High user count with broad access |
+| 🏷️ **No Sensitivity Label** | **+1 point** | Missing data classification (compliance) |
 
 </div>
 
-> 💡 **Customizable**: All scoring weights can be adjusted interactively when running the tool!
+> � **Customizable**: All scoring weights and thresholds can be adjusted interactively when running the tool!
+
+### 🔄 **Methodology Update (October 2025)**
+
+**Previous Version Issue**: Earlier versions incorrectly penalized public sites with +3 points, treating them as internet-accessible. However, SharePoint "public" sites are **internal-only by default** and not inherently risky.
+
+**Current Focus**: The refined methodology targets actual security risks:
+- ✅ **Contextual Analysis**: Private sites with broad access patterns
+- ✅ **Content-Aware**: Sensitive keywords in public sites (HR, Finance, etc.)  
+- ✅ **Threshold-Based**: EEEU permissions only flagged when excessive (10+)
+- ✅ **Realistic Scoring**: More actionable risk prioritization
 
 ## 🛠️ Usage
 
@@ -149,12 +162,13 @@ When you run the analysis script, you'll be prompted:
 Scoring Configuration
 ===================
 Default scoring weights:
-- Public Site: +3 points
-- EEEU Permissions: +3 points
+- High EEEU Permissions (10+): +4 points
+- Private Site with EEEU: +3 points
+- Public Site with Sensitive Title: +5 points
 - Everyone Permissions: +3 points
 - Anyone Links: +2 points
-- No Sensitivity Label: +2 points
-- ≥500 Users: +2 points
+- High Unique Permissions (50+): +3 points
+- No Sensitivity Label: +1 points
 
 Would you like to customize these scoring weights? (y/N): 
 ```
@@ -211,17 +225,21 @@ SharePoint Risk Analysis Tool
 Scoring Configuration
 ===================
 Default scoring weights:
-- Public Site: +3 points
-- EEEU Permissions: +3 points
+- High EEEU Permissions (10+): +4 points
+- Private Site with EEEU: +3 points
+- Public Site with Sensitive Title: +5 points
 - Everyone Permissions: +3 points
 - Anyone Links: +2 points
-- No Sensitivity Label: +2 points
-- 500+ Users: +2 points
+- High Unique Permissions (50+): +3 points
+- No Sensitivity Label: +1 points
 
 Would you like to customize these scoring weights? (y/N): n
 
 Loading CSV data...
-Loaded 4105 sites
+Loaded 4105 raw entries
+
+Deduplicating and aggregating site data...
+Deduplicated to 4105 unique sites
 
 Analyzing risk scores...
 
@@ -230,16 +248,16 @@ Generating HTML report...
 === Analysis Complete ===
 Report generated: .\risk_analysis.html
 Total sites analyzed: 4105
-High risk sites (score 7+): 156
-Public sites: 189
+High risk sites (score 7+): 25
+Private sites with broad access: 16
 Sites with anyone links: 0
 
 Top 5 Highest Risk Sites:
-  13 - Primary Reports
-  10 - Primary Communications
-  10 - Marketing Templates
-  10 - Unit Finance
-  10 - Common Team Site
+  14 - 2025 Automation Initiative
+  14 - Domestic Research
+  14 - Project RESTRUCTURING - Partner
+  13 - Backup Research
+  11 - Forecasting Tracking
 
 Opening report in default browser...
 ```
