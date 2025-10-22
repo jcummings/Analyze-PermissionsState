@@ -1251,10 +1251,22 @@ function Generate-GuidancePage {
             }
         }
     </style>
+    <script>
+        function goBackToReport() {
+            // Try to close the window first (if opened in new tab)
+            if (window.opener) {
+                window.close();
+            } else {
+                // If window doesn't close, navigate to main report
+                const mainReportUrl = window.location.href.replace('_guidance.html', '.html');
+                window.location.href = mainReportUrl;
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container">
-        <a href="javascript:history.back()" class="back-link">Back to Risk Analysis Report</a>
+        <a href="#" onclick="goBackToReport()" class="back-link">Back to Risk Analysis Report</a>
         
         <h1>SharePoint Governance Action Plan</h1>
         
@@ -1409,7 +1421,7 @@ function Generate-GuidancePage {
         </div>
         
         <div style="text-align: center; margin-top: 30px;">
-            <a href="javascript:history.back()" class="back-link">Return to Risk Analysis Report</a>
+            <a href="#" onclick="goBackToReport()" class="back-link">Return to Risk Analysis Report</a>
         </div>
     </div>
 </body>
